@@ -35,4 +35,22 @@ class ReadThreadsTest extends TestCase
         $response = $this->get('/thread/' . $this->thread->id);
         $response->assertSee($reply->body);
     }
+
+    /**
+     * @test
+     */
+    public function a_user_can_browse_threads()
+    {
+        $response = $this->get('/threads');
+        $response->assertSee($this->thread->title);
+    }
+
+    /**
+     * @test
+     */
+    public function a_user_can_read_a_single_thread()
+    {
+        $response = $this->get('/thread/'.$this->thread->id);
+        $response->assertSee($this->thread->title);
+    }
 }
