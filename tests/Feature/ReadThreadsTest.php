@@ -1,10 +1,13 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Feature;
 
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
+/**
+ * 阅读话题测试
+ */
 class ReadThreadsTest extends TestCase
 {
     use DatabaseMigrations;
@@ -21,6 +24,8 @@ class ReadThreadsTest extends TestCase
     }
 
     /**
+     * 能够阅读话题下的回复测试
+     * 
      * @test
      */
     public function a_user_can_read_replies_that_are_associated_with_a_thread()
@@ -37,6 +42,8 @@ class ReadThreadsTest extends TestCase
     }
 
     /**
+     * 能够打开话题列表测试
+     * 
      * @test
      */
     public function a_user_can_browse_threads()
@@ -46,11 +53,13 @@ class ReadThreadsTest extends TestCase
     }
 
     /**
+     * 能够查看单独话题测试
+     * 
      * @test
      */
     public function a_user_can_read_a_single_thread()
     {
-        $response = $this->get('/thread/'.$this->thread->id);
+        $response = $this->get($this->thread->path());
         $response->assertSee($this->thread->title);
     }
 }

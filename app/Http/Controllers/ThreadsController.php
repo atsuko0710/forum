@@ -8,9 +8,9 @@ use Illuminate\Http\Request;
 class ThreadsController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * 展示话题列表
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View|\Illuminate\Contracts\View\Factory
      */
     public function index()
     {
@@ -40,10 +40,10 @@ class ThreadsController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * 展示话题详情
      *
      * @param  \App\Thread  $thread
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View|\Illuminate\Contracts\View\Factory
      */
     public function show(Thread $thread)
     {
