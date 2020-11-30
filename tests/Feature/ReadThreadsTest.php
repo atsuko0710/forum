@@ -32,9 +32,12 @@ class ReadThreadsTest extends TestCase
     {
         // 如果存在 Thread
         // 并且该 Thread 拥有回复
-        $reply = factory('App\Reply')->create([
-            'thread_id' => $this->thread->id
-        ]);
+        // $reply = factory('App\Reply')->create([
+        //     'thread_id' => $this->thread->id
+        // ]);
+
+        $reply = create('App\Reply', ['thread_id' => $this->thread->id]);
+        
         // 那么当我们看该 Thread 时
         // 我们也要看到回复
         $response = $this->get('/thread/' . $this->thread->id);
