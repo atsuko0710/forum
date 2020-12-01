@@ -21,7 +21,7 @@ class Thread extends Model
     // 获取话题详情链接
     public function path()
     {
-        return '/thread/' . $this->id;
+        return '/threads/' . $this->id;
     }
 
     // 向话题添加回复

@@ -40,7 +40,7 @@ class ReadThreadsTest extends TestCase
         
         // 那么当我们看该 Thread 时
         // 我们也要看到回复
-        $response = $this->get('/thread/' . $this->thread->id);
+        $response = $this->get($this->thread->path());
         $response->assertSee($reply->body);
     }
 

@@ -25,7 +25,7 @@ class CreateThreadsTest extends TestCase
 
         // $thread = factory('App\Thread')->make();  // create 是直接入库，make是创建一个实例不入库
         $thread = make('App\Thread');  // create 是直接入库，make是创建一个实例不入库
-        $this->post('/thread', $thread->toArray());  // 创建一个主题
+        $this->post('/threads', $thread->toArray());  // 创建一个主题
         $this->get('/threads')->assertSee($thread->title)->assertSee($thread->body);
     }
 
@@ -39,6 +39,17 @@ class CreateThreadsTest extends TestCase
         $this->expectException('Illuminate\Auth\AuthenticationException');
         // $thread = factory('App\Thread')->make();
         $thread = make('App\Thread');
-        $this->post('/thread', $thread->toArray());
+        $this->post('/threads', $thread->toArray());
+    }
+
+    /**
+     * 未授权用户打开主题创建页面会返回到登陆页面
+     *
+     * @test
+     */
+    public function guest_may_not_see_the_create_thread_page()
+    {
+        $this->withExceptionHanding();
+        $this->get('threads/create')->assertRedirect('/login');
     }
 }

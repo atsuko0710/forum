@@ -10,7 +10,7 @@ class ThreadsController extends Controller
     public function __construct()
     {
         // 登陆验证
-        $this->middleware('auth')->only('store');
+        $this->middleware('auth')->except(['index', 'show']);
     }
 
     /**
@@ -25,13 +25,13 @@ class ThreadsController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * 新增页面
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View|\Illuminate\Contracts\View\Factory
      */
     public function create()
     {
-        //
+        return view('threads.create');
     }
 
     /**
