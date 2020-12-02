@@ -46,4 +46,17 @@ class ParticipateInForumTest extends TestCase
         $reply = create('App\Reply');
         $this->post($thread->path().'/reply', $reply->toArray())->assertRedirect('/login');
     }
+
+    /**
+     * 一个回复必须包含内容
+     *
+     * @test
+     */
+    public function a_reply_require_a_body()
+    {
+        $this->withExceptionHanding()->signIn();
+        $thread = create('App\Thread');
+        $reply = make('App\Reply', ['body' => null]);
+        $this->post($thread->path().'/reply', $reply->toArray())->assertSessionHasErrors('body');
+    }
 }
