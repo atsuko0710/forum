@@ -41,9 +41,9 @@ class ReplyController extends Controller
      * @param Thread $thread
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Thread $thread)
+    public function store($channelId, Thread $thread)
     {
-        $res = $thread->addReply([
+        $thread->addReply([
             'body' => request('body'),
             'user_id' => auth()->id(),
         ]);

@@ -36,20 +36,12 @@ class CreateThreadsTest extends TestCase
      */
     public function guest_may_not_create_threads()
     {
-        $this->expectException('Illuminate\Auth\AuthenticationException');
-        // $thread = factory('App\Thread')->make();
-        $thread = make('App\Thread');
-        $this->post('/threads', $thread->toArray());
-    }
-
-    /**
-     * 未授权用户打开主题创建页面会返回到登陆页面
-     *
-     * @test
-     */
-    public function guest_may_not_see_the_create_thread_page()
-    {
         $this->withExceptionHanding();
+        // 打开新建话题页面会跳转到登陆页
         $this->get('threads/create')->assertRedirect('/login');
+
+        // 创建话题会跳转到登陆页
+        $thread = make('App\Thread');
+        $this->post('/threads', $thread->toArray())->assertRedirect('/login');
     }
 }

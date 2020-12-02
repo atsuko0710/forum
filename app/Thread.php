@@ -18,10 +18,16 @@ class Thread extends Model
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
+    public function channel()
+    {
+        return $this->belongsTo(Channel::class, 'channel_id', 'id');
+    }
+
     // 获取话题详情链接
     public function path()
     {
-        return '/threads/' . $this->id;
+        // return '/threads/' . $this->id;
+        return '/threads/'.$this->channel->slug.'/'.$this->id;
     }
 
     // 向话题添加回复
