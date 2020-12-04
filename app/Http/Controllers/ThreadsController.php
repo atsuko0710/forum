@@ -7,10 +7,16 @@ use Illuminate\Http\Request;
 
 class ThreadsController extends Controller
 {
+    public function __construct()
+    {
+        // 登陆验证
+        $this->middleware('auth')->except(['index', 'show']);
+    }
+
     /**
-     * Display a listing of the resource.
+     * 展示话题列表
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View|\Illuminate\Contracts\View\Factory
      */
     public function index()
     {
@@ -19,35 +25,48 @@ class ThreadsController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * 新增页面
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View|\Illuminate\Contracts\View\Factory
      */
     public function create()
     {
-        //
+        return view('threads.create');
     }
 
     /**
-     * Store a newly created resource in storage.
+     * 创建一个话题
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'title' => 'required',
+            'body' => 'required',
+            'channel_id' => 'required|exists:channels,id'
+        ]);
+
+        $thread = Thread::create([
+            'user_id' => auth()->id(),
+            'channel_id' => request('channel_id'),
+            'title' => request('title'),
+            'body' => request('body'),
+        ]);
+        return redirect($thread->path()); 
     }
 
     /**
-     * Display the specified resource.
+     * 展示话题详情
      *
-     * @param  \App\Thread  $thread
-     * @return \Illuminate\Http\Response
+     * @param [type] $channel
+     * @param Thread $thread
+     * @return \Illuminate\View\View|\Illuminate\Contracts\View\Factory
      */
-    public function show(Thread $thread)
+    public function show($channel, Thread $thread)
     {
-        //
+        return view('threads/show', compact('thread'));
     }
 
     /**

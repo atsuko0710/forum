@@ -12,10 +12,19 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    $data = session();
+    return json_encode($data);
 });
 
-Route::get('/threads', 'ThreadsController@index');
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+// Route::resource('threads','ThreadsController');
+Route::get('/threads', 'ThreadsController@index');
+Route::get('/threads/create', 'ThreadsController@create');
+Route::get('/threads/{channel}/{thread}', 'ThreadsController@show');
+Route::post('/threads', 'ThreadsController@store');
+
+Route::post('/threads/{channel}/{thread}/reply', 'ReplyController@store');
+

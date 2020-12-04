@@ -3,10 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Reply;
+use App\Thread;
 use Illuminate\Http\Request;
 
 class ReplyController extends Controller
 {
+
+    public function __construct()
+    {
+        // 登陆验证
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -28,14 +36,22 @@ class ReplyController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * 新建回复
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Thread $thread
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store($channelId, Thread $thread)
     {
-        //
+        $this->validate(request(), [
+            'body' => 'required'
+        ]);
+
+        $thread->addReply([
+            'body' => request('body'),
+            'user_id' => auth()->id(),
+        ]);
+        return back();
     }
 
     /**
