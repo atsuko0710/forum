@@ -10,7 +10,7 @@ abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         // 平时禁用异常处理
