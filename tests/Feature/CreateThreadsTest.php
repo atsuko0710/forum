@@ -27,7 +27,7 @@ class CreateThreadsTest extends TestCase
         $thread = make('App\Thread');  // create 是直接入库，make是创建一个实例不入库
         $response = $this->post('/threads', $thread->toArray());  // 创建一个主题
         // $this->get('/threads')->assertSee($thread->title)->assertSee($thread->body);
-        // $this->get($response->headers->get('Location'))->assertSee($thread->title)->assertSee($thread->body);
+        $this->get($response->headers->get('Location'))->assertSee($thread->title)->assertSee($thread->body);
     }
 
     /**
