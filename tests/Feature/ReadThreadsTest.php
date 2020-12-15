@@ -81,4 +81,21 @@ class ReadThreadsTest extends TestCase
             ->assertSee($threadInChannel->title)
             ->assertDontSee($threadNotInChannel->title);
     }
+
+    /**
+     * 能够过滤自己创建的话题
+     *
+     * @test
+     */
+    public function a_user_can_filter_threads_by_any_username()
+    {
+        $this->signIn(create('App\User', ['name' => 'test']));        
+
+        $threadByTest = create('App\Thread', ['user_id' => auth()->id()]);
+        $threadNotByTest = create('App\Thread');
+
+        $this->get('threads?by=test')
+            ->assertSee($threadByTest->title)
+            ->assertDontSee($threadNotByTest->title);
+    }
 }

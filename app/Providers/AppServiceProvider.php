@@ -18,7 +18,10 @@ class AppServiceProvider extends ServiceProvider
         // 整个框架启动时设置时间配置为中文
         Carbon::setLocale('zh');
 
-        View::share('channels', \App\Channel::all());
+        // View::share('channels', \App\Channel::all());
+        View::composer('*', function ($view) {
+            $view->with('channels', \App\Channel::all());
+        });
     }
 
     /**
