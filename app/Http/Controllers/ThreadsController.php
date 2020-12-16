@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Channel;
+use App\Filters\ThreadsFilters;
 use App\Thread;
 use App\User;
 use Illuminate\Http\Request;
@@ -18,9 +19,17 @@ class ThreadsController extends Controller
     /**
      * 展示话题列表
      *
+     * @param Channel $channel
+     * @param ThreadsFilters $filter
      * @return \Illuminate\View\View|\Illuminate\Contracts\View\Factory
      */
-    public function index(Channel $channel)
+    public function index(Channel $channel, ThreadsFilters $filter)
+    {
+        $threads = $this->getThreads($channel, $filter);
+        return view('threads.index', compact('threads'));
+    }
+
+    protected function getThreads(Channel $channel, ThreadsFilters $filter)
     {
         // 传入渠道值筛选
         if ($channel->exists) {
@@ -30,13 +39,15 @@ class ThreadsController extends Controller
         }
 
         // 传入发布者筛选
-        if ($username = request('by')) {
-            $user = User::where('name', $username)->firstOrFail();
-            // dd($user->id);
-            $threads->where('user_id', $user->id);
-        }
-        $threads = $threads->get();
-        return view('threads.index', compact('threads'));
+        // if ($username = request('by')) {
+        //     $user = User::where('name', $username)->firstOrFail();
+        //     $threads->where('user_id', $user->id);
+        // }
+        // $threads = $threads->get();
+
+        $threads = $threads->filter($filter)->get();
+
+        return $threads;
     }
 
     /**

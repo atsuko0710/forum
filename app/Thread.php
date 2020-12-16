@@ -3,7 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
- 
+
 class Thread extends Model
 {
     protected $guarded = [];
@@ -21,6 +21,18 @@ class Thread extends Model
     public function channel()
     {
         return $this->belongsTo(Channel::class, 'channel_id', 'id');
+    }
+
+    /**
+     * 本地作用域，做查询
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query 查询构造器
+     * @param \App\Filters\ThreadsFilters $filters
+     * @return void
+     */
+    public function scopeFilter($query, $filters)
+    {
+        return $filters->apply($query);
     }
 
     // 获取话题详情链接
