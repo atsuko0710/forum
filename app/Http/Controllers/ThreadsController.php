@@ -26,6 +26,12 @@ class ThreadsController extends Controller
     public function index(Channel $channel, ThreadsFilters $filter)
     {
         $threads = $this->getThreads($channel, $filter);
+
+        // 如果希望返回的是json则直接返回
+        if(request()->wantsJson()){
+            return $threads;
+        }
+
         return view('threads.index', compact('threads'));
     }
 
