@@ -37,12 +37,21 @@ class ThreadsController extends Controller
 
     protected function getThreads(Channel $channel, ThreadsFilters $filter)
     {
-        // 传入渠道值筛选
+        $threads = Thread::with('channel')->latest()->filter($filter);
+
         if ($channel->exists) {
-            $threads = $channel->threads()->latest();
-        } else {
-            $threads = Thread::latest();
+            $threads->where('channel_id', $channel->id);
         }
+
+        $threads = $threads->get();
+        return $threads;
+
+        // 传入渠道值筛选
+        // if ($channel->exists) {
+        //     $threads = $channel->threads()->latest();
+        // } else {
+        //     $threads = Thread::latest();
+        // }
 
         // 传入发布者筛选
         // if ($username = request('by')) {
@@ -51,8 +60,7 @@ class ThreadsController extends Controller
         // }
         // $threads = $threads->get();
 
-        $threads = $threads->filter($filter)->get();
-
+        // $threads = $threads->filter($filter)->get();
         return $threads;
     }
 

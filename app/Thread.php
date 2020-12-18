@@ -20,7 +20,10 @@ class Thread extends Model
     
     public function replies()
     {
-        return $this->hasMany(Reply::class, 'thread_id', 'id');
+        // return $this->hasMany(Reply::class, 'thread_id', 'id');
+        return $this->hasMany(Reply::class, 'thread_id', 'id')
+                    ->withCount('favorites')
+                    ->with('owner');
     }
 
     public function creator()

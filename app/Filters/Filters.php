@@ -33,6 +33,7 @@ abstract class Filters
      */
     protected function getFilters()
     {
-        return array_filter($this->request->intersect($this->filters));
+        // return array_filter($this->request->intersect($this->filters));
+        return array_filter($this->request->only($this->filters));
     }
 }
