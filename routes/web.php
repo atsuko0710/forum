@@ -30,3 +30,5 @@ Route::get('threads/{channel}','ThreadsController@index');
 Route::post('/threads/{channel}/{thread}/reply', 'ReplyController@store');
 
 Route::post('replies/{reply}/favorite', 'FavoritesController@store');
+
+Route::get('profile/{user}', 'ProfilesController@show');
