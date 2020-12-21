@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Thread extends Model
 {
     protected $guarded = [];
+    protected $with = ['creator','channel'];
 
     // 定义全局作用域
     protected static function boot()
@@ -21,9 +22,10 @@ class Thread extends Model
     public function replies()
     {
         // return $this->hasMany(Reply::class, 'thread_id', 'id');
-        return $this->hasMany(Reply::class, 'thread_id', 'id')
-                    ->withCount('favorites')
-                    ->with('owner');
+        // return $this->hasMany(Reply::class, 'thread_id', 'id')
+        //             ->withCount('favorites')
+        //             ->with('owner');
+        return $this->hasMany(Reply::class, 'thread_id', 'id');  // 预加载已经在Reply进行了
     }
 
     public function creator()
