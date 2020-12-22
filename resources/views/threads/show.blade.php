@@ -6,7 +6,7 @@
             <div class="col-md-8">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <a href="#"> {{ $thread->creator->name }} </a> 发表了：
+                        <a href="{{ route('profile', $thread->creator) }}"> {{ $thread->creator->name }} </a> 发表了：
                         {{ $thread->title }}
                     </div>
 
@@ -43,7 +43,7 @@
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <p>
-                            <a href="#">{{ $thread->creator->name }}</a> 发布于 {{ $thread->created_at->diffForHumans() }},
+                            <a href="{{ route('profile', $thread->creator) }}">{{ $thread->creator->name }}</a> 发布于 {{ $thread->created_at->diffForHumans() }},
                             当前共有 {{ $thread->replies_count }} 个回复。
                         </p>
                     </div>

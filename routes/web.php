@@ -31,4 +31,4 @@ Route::post('/threads/{channel}/{thread}/reply', 'ReplyController@store');
 
 Route::post('replies/{reply}/favorite', 'FavoritesController@store');
 
-Route::get('profile/{user}', 'ProfilesController@show');
+Route::get('profile/{user}', 'ProfilesController@show')->name('profile');
