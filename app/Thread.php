@@ -17,6 +17,11 @@ class Thread extends Model
         static::addGlobalScope('replyCount',function ($builder){
            $builder->withCount('replies');
         });
+
+        // 删除一条话题，其下回复也要删除
+        static::deleting(function($thread) {
+            $thread->replies()->delete();
+        });
     }
     
     public function replies()

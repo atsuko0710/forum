@@ -92,4 +92,36 @@ class CreateThreadsTest extends TestCase
         $response = $this->post('/threads', $thread->toArray());
         return $response;
     }
+
+    /**
+     * 话题能被删除
+     *
+     * @test
+     */
+    public function a_thread_can_be_deleted()
+    {
+        $this->signIn();
+        $thread = create('App\Thread');
+        create('App\Reply', ['thread_id' => $thread]);
+        // $response = $this->json('DELETE', $thread->path());
+        $response = $this->delete($thread->path());
+
+        // 正常状态，无返回数据
+        $response->assertStatus(204);
+        $this->assertDatabaseMissing('threads', ['id' => $thread->id]);
+        $this->assertDatabaseMissing('replies', ['thread_id' => $thread->id]);
+    }
+
+    /**
+     * 登陆用户才能删除话题
+     *
+     * @test
+     */
+    public function guests_cannot_delete_threads()
+    {
+        $this->withExceptionHanding();
+        $thread = create('App\Thread');
+        $this->delete($thread->path())
+            ->assertRedirect('/login');
+    }
 }
