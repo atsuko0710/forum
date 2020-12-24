@@ -101,10 +101,10 @@ class CreateThreadsTest extends TestCase
     public function a_thread_can_be_deleted()
     {
         $this->signIn();
-        $thread = create('App\Thread');
-        create('App\Reply', ['thread_id' => $thread]);
-        // $response = $this->json('DELETE', $thread->path());
-        $response = $this->delete($thread->path());
+        $thread = create('App\Thread', ['user_id' => auth()->id()]);
+        create('App\Reply', ['thread_id' => $thread->id]);
+        $response = $this->json('DELETE', $thread->path());
+        // $response = $this->delete($thread->path());
 
         // 正常状态，无返回数据
         $response->assertStatus(204);
@@ -126,6 +126,6 @@ class CreateThreadsTest extends TestCase
         
         $this->signIn();
         $this->delete($thread->path())
-            ->assertRedirect('/threads');
+            ->assertStatus(403);
     }
 }
