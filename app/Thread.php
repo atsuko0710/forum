@@ -22,7 +22,7 @@ class Thread extends Model
 
         // 删除一条话题，其下回复也要删除
         static::deleting(function($thread) {
-            $thread->replies()->delete();
+            $thread->replies->each->delete();
         });
     }
     
