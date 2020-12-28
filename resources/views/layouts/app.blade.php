@@ -13,12 +13,6 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
-    <script>
-        window.Laravel = {!! json_encode([
-            'csrfToken' => csrf_token(),
-        ]) !!};
-    </script>
-
     <style>
         body{ padding-bottom: 100px; }
         .level { display: flex;align-items: center; }
@@ -30,6 +24,8 @@
         @include('layouts.nav')
 
         @yield('content')
+
+        <flash message="Tempory message"></flash>
     </div>
 
     <!-- Scripts -->
