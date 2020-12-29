@@ -1,6 +1,6 @@
 <template>
     <div class="alert alert-warning alert-flash" role="alert">
-        <strong> Success! </strong>{{ body }}
+        <strong> Success! 2333333</strong>{{ body }}
     </div>
  </template>
 

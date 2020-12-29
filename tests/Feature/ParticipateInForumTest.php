@@ -28,7 +28,10 @@ class ParticipateInForumTest extends TestCase
         $reply = make('App\Reply');
         $this->post($thread->path().'/reply', $reply->toArray());
 
-        $this->get($thread->path())->assertSee($reply->body);
+        // $this->get($thread->path())->assertSee($reply->body);
+
+        $this->assertDatabaseHas('replies', ['body' => $reply->body]);        
+        $this->assertEquals(1, $thread->fresh()->replies_count);
     }
 
     /**
@@ -86,9 +89,12 @@ class ParticipateInForumTest extends TestCase
         $this->signIn();
         $reply = create('App\Reply', ['user_id' => auth()->id()]);
         $this->delete('/replies/'.$reply->id);
+        // 数据删除
         $this->assertDatabaseMissing('replies', [
             'id' => $reply->id
         ]);
+        // 回复数量变为0
+        $this->assertEquals(0, $reply->replies_count);
     }
 
     /**
