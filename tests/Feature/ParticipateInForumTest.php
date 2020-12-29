@@ -115,4 +115,20 @@ class ParticipateInForumTest extends TestCase
             'body' => $updateReply
         ]);
     }
+
+    /**
+     * 没有授权的用户不能更新回复
+     *
+     * @test
+     */
+    public function unauthorized_users_cannot_update_replies()
+    {
+        $this->withExceptionHanding();
+        $reply = create('App\Reply');
+
+        $this->patch('/replies/'.$reply->id)->assertRedirect('login');
+
+        $this->signIn();
+        $this->patch('/replies/'.$reply->id)->assertStatus(403);
+    }
 }
