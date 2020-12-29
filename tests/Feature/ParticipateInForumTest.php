@@ -59,4 +59,35 @@ class ParticipateInForumTest extends TestCase
         $reply = make('App\Reply', ['body' => null]);
         $this->post($thread->path().'/reply', $reply->toArray())->assertSessionHasErrors('body');
     }
+
+    /**
+     * 没有登陆的用户不能删除回复
+     *
+     * @test
+     */
+    public function unauthorized_users_cannot_delete_replies()
+    {
+        $this->withExceptionHanding();
+        $reply = create('App\Reply');
+        $this->delete('/replies/'.$reply->id)->assertRedirect('/login');
+
+        $this->signIn();
+        $this->delete('/replies/'.$reply->id)
+            ->assertStatus(403);
+    }
+    
+    /**
+     * 有权限的用户能够正常删除数据
+     *
+     * @test
+     */
+    public function authorized_users_can_delete_replies()
+    {
+        $this->signIn();
+        $reply = create('App\Reply', ['user_id' => auth()->id()]);
+        $this->delete('/replies/'.$reply->id);
+        $this->assertDatabaseMissing('replies', [
+            'id' => $reply->id
+        ]);
+    }
 }

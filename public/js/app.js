@@ -45352,9 +45352,8 @@ var app = new Vue({
 /***/ }),
 
 /***/ "./resources/assets/js/bootstrap.js":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
 
 window._ = __webpack_require__("./node_modules/lodash/lodash.js");
 
