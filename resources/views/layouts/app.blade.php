@@ -25,7 +25,7 @@
 
         @yield('content')
 
-        <flash message="Tempory message"></flash>
+        <flash message="{{ session('flash') }}"></flash>
     </div>
 
     <!-- Scripts -->

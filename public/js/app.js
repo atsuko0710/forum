@@ -1618,8 +1618,34 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     props: ['message'],
     data: function data() {
         return {
-            body: this.message
+            body: this.message,
+            show: false
         };
+    },
+    created: function created() {
+        if (this.message) {
+            this.flash(this.message);
+        }
+        window.events.$on('flash', function (message) {
+            return $this.flash(message);
+        });
+    },
+
+
+    methods: {
+        flash: function flash(message) {
+            this.body = message;
+            this.show = true;
+
+            this.hide();
+        },
+        hide: function hide() {
+            var _this = this;
+
+            setTimeout(function () {
+                _this.show = false;
+            }, 3000);
+        }
     }
 });
 
@@ -32955,13 +32981,13 @@ var render = function() {
   return _c(
     "div",
     {
-      staticClass: "alert alert-warning alert-flash",
+      directives: [
+        { name: "show", rawName: "v-show", value: _vm.show, expression: "show" }
+      ],
+      staticClass: "alert alert-success alert-flash",
       attrs: { role: "alert" }
     },
-    [
-      _c("strong", [_vm._v(" Success! 2333333")]),
-      _vm._v(_vm._s(_vm.body) + "\n")
-    ]
+    [_c("strong", [_vm._v("Success!")]), _vm._v(_vm._s(_vm.body) + "\n")]
   )
 }
 var staticRenderFns = []
@@ -45351,6 +45377,8 @@ try {
   __webpack_require__("./node_modules/bootstrap-sass/assets/javascripts/bootstrap.js");
 } catch (e) {}
 
+window.Vue = __webpack_require__("./node_modules/vue/dist/vue.common.js");
+
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
  * to our Laravel back-end. This library automatically handles sending the
@@ -45389,6 +45417,14 @@ if (token) {
 //     broadcaster: 'pusher',
 //     key: 'your-pusher-key'
 // });
+
+window.events = new Vue();
+
+window.flash = function (message) {
+  var level = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'success';
+
+  window.events.$emit('flash', { message: message, level: level });
+};
 
 /***/ }),
 
