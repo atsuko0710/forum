@@ -1677,13 +1677,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.editing = false;
 
             flash("更新成功！");
-        },
-        destroy: function destroy() {
-            axios.delete('/replies/' + this.attributes.id);
-
-            $(this.$el).fadeOut(300, function () {
-                flash("删除回复成功！");
-            });
         }
     }
 });
