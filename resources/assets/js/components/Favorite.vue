@@ -25,9 +25,11 @@
         methods: {
             toggle() {
                 if (this.isFavorited) {
-                    axios.delete('/replies/' + this.reply.id + '/favorites');
+                    axios.delete('/replies/' + this.reply.id + '/favorite');
+                    this.isFavorited = false;
+                    this.favoritesCount--;
                 } else {
-                    axios.post('/replies/' + this.reply.id + '/favorites');
+                    axios.post('/replies/' + this.reply.id + '/favorite');
 
                     this.isFavorited = true;
                     this.favoritesCount ++;
