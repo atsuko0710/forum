@@ -99,6 +99,11 @@ class ReplyController extends Controller
     {
         $this->authorize('update', $reply);
         $reply->delete();
+
+        if (request()->expectsJson()) {
+            return response(['status' => '回复删除']);
+        }
+
         return back();
     }
 }
