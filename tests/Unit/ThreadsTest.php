@@ -78,4 +78,40 @@ class ThreadsTest extends TestCase
         $thread = create('App\Thread');
         $this->assertEquals('/threads/'.$thread->channel->slug.'/'.$thread->id, $thread->path());
     }
+
+    /**
+     * 话题订阅
+     *
+     * @test
+     */
+    public function a_thread_can_be_subscribed_to()
+    {
+        $thread = create('App\Thread');
+        // 话题订阅
+        $thread->subscribe($userId = 1);
+
+        $this->assertEquals(
+            1,
+            $thread->subscriptions()->where('user_id', $userId)->count() 
+        );
+    }
+
+    /**
+     * 取消订阅
+     *
+     * @test
+     */
+    public function a_thread_can_be_unsubscribed_from()
+    {
+        $thread = create('App\Thread');
+        // 话题订阅
+        $thread->subscribe($userId = 1);
+
+        $thread->unsubscribe($userId = 1);
+
+        $this->assertEquals(
+            0,
+            $thread->subscriptions()->where('user_id', $userId)->count() 
+        );
+    }
 }

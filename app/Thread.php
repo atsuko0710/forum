@@ -57,6 +57,33 @@ class Thread extends Model
         return $filters->apply($query);
     }
 
+    public function subscriptions()
+    {
+        return $this->hasMany(ThreadSubscription::class);
+    }
+
+    /**
+     * 订阅
+     *
+     * @param int $userId
+     * @return void
+     */
+    public function subscribe($userId = null)
+    {
+        $this->subscriptions()->create([
+            'user_id' => $userId ?: auth()->id()
+        ]);
+        return $this;
+    }
+
+    public function unsubscribe($userId = null)
+    {
+        $this->subscriptions()
+            ->where('user_id', $userId ?: auth()->id())
+            ->delete();
+        return $this;
+    }
+
     // 获取话题详情链接
     public function path()
     {
