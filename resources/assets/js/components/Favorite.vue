@@ -12,7 +12,7 @@
         data() {
             return {
                 favoritesCount: this.reply.favoritesCount,
-                isFavorited: false,
+                isFavorited: this.reply.isFavorited
             }
         },
 

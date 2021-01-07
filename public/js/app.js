@@ -1621,7 +1621,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     data: function data() {
         return {
             favoritesCount: this.reply.favoritesCount,
-            isFavorited: false
+            isFavorited: this.reply.isFavorited
         };
     },
 
@@ -1794,22 +1794,22 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    props: ['data'],
+    props: ['reply'],
 
     components: { Favorite: __WEBPACK_IMPORTED_MODULE_0__Favorite_vue___default.a },
 
     data: function data() {
         return {
             editing: false,
-            id: this.data.id,
-            body: this.data.body
+            id: this.reply.id,
+            body: this.reply.body
         };
     },
 
 
     methods: {
         update: function update() {
-            axios.patch('/replies/' + this.data.id, {
+            axios.patch('/replies/' + this.reply.id, {
                 body: this.body
             });
 
@@ -1818,9 +1818,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             flash('成功更新回复');
         },
         destroy: function destroy() {
-            axios.delete('/replies/' + this.data.id);
+            axios.delete('/replies/' + this.reply.id);
 
-            this.$emit('deleted', this.data.id);
+            this.$emit('deleted', this.reply.id);
         }
     }
 });
@@ -33216,9 +33216,10 @@ var render = function() {
     _vm._l(_vm.items, function(reply, index) {
       return _c(
         "div",
+        { key: reply.id },
         [
           _c("reply", {
-            attrs: { data: reply },
+            attrs: { reply: reply },
             on: {
               deleted: function($event) {
                 return _vm.remove(index)
@@ -33292,10 +33293,10 @@ var render = function() {
         _c("div", { staticClass: "level" }, [
           _c("h5", { staticClass: "flex" }, [
             _c("a", {
-              attrs: { href: "/profiles/" + _vm.data.owner.name },
-              domProps: { textContent: _vm._s(_vm.data.owner.name) }
+              attrs: { href: "/profiles/" + _vm.reply.owner.name },
+              domProps: { textContent: _vm._s(_vm.reply.owner.name) }
             }),
-            _vm._v(" 回复于 " + _vm._s(_vm.data.created_at) + "\n            ")
+            _vm._v(" 回复于 " + _vm._s(_vm.reply.created_at) + "\n            ")
           ]),
           _vm._v(" "),
           _c("div", [_c("favorite", { attrs: { reply: _vm.reply } })], 1)

@@ -3,9 +3,9 @@
         <div class="panel-heading">
             <div class="level">
                 <h5 class="flex">
-                    <a :href="'/profiles/'+data.owner.name"
-                        v-text="data.owner.name">
-                    </a> 回复于 {{ data.created_at }}
+                    <a :href="'/profiles/'+reply.owner.name"
+                        v-text="reply.owner.name">
+                    </a> 回复于 {{ reply.created_at }}
                 </h5>
 
                 <div>
@@ -37,21 +37,21 @@
     import Favorite from './Favorite.vue';
 
     export default {
-        props: ['data'],
+        props: ['reply'],
 
         components: { Favorite },
 
         data() {
             return {
               editing: false,
-              id: this.data.id,
-              body: this.data.body
+              id: this.reply.id,
+              body: this.reply.body
             };
         },
 
         methods:{
             update() {
-                axios.patch('/replies/' + this.data.id,{
+                axios.patch('/replies/' + this.reply.id,{
                     body:this.body
                 });
 
@@ -61,9 +61,9 @@
             },
 
             destroy() {
-                axios.delete('/replies/' + this.data.id);
+                axios.delete('/replies/' + this.reply.id);
 
-                this.$emit('deleted', this.data.id)
+                this.$emit('deleted', this.reply.id)
             }
         }
     }
