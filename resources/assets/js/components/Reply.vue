@@ -7,6 +7,10 @@
                         v-text="data.owner.name">
                     </a> 回复于 {{ data.created_at }}
                 </h5>
+
+                <div>
+                    <favorite :reply="reply"></favorite>
+                </div>
             </div>
         </div>
 

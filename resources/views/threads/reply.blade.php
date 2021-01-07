@@ -18,9 +18,9 @@
                     </form>
                 </div> -->
                
-                <div>
+                <!-- <div>
                     <favorite :reply="{{ $reply }}"></favorite>
-                </div>
+                </div> -->
             </div>
         </div>
 

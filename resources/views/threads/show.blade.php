@@ -54,6 +54,10 @@
                                 <a href="#">{{ $thread->creator->name }}</a> 发布于 {{ $thread->created_at->diffForHumans() }},
                                 当前共有 {{ $thread->replies_count }} 个回复。
                             </p>
+
+                            <p>
+                                <subscribe-button></subscribe-button>
+                            </p>
                         </div>
                     </div>
                 </div>

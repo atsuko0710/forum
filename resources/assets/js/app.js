@@ -20,3 +20,4 @@ Vue.component('thread-view', require('./components/Thread.vue'));
 const app = new Vue({
     el: '#app'
 });
+
