@@ -10,6 +10,7 @@ class Thread extends Model
 
     protected $guarded = [];
     protected $with = ['creator','channel'];
+    protected $appends = ['isSubscribedTo'];
 
     // 定义全局作用域
     protected static function boot()
@@ -62,6 +63,13 @@ class Thread extends Model
         return $this->hasMany(ThreadSubscription::class);
     }
 
+    public function getIsSubscribedToAttribute()
+    {
+        return $this->subscriptions()
+            ->where('user_id', auth()->id())
+            ->exists();
+    }
+
     /**
      * 订阅
      *
@@ -76,6 +84,12 @@ class Thread extends Model
         return $this;
     }
 
+    /**
+     * 取消订阅
+     *
+     * @param int $userId
+     * @return void
+     */
     public function unsubscribe($userId = null)
     {
         $this->subscriptions()

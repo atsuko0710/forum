@@ -56,7 +56,7 @@
                             </p>
 
                             <p>
-                                <subscribe-button></subscribe-button>
+                                <subscribe-button :active="true"></subscribe-button>
                             </p>
                         </div>
                     </div>
