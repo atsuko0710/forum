@@ -14,9 +14,14 @@
 
         methods:{
             subscribe(){
-                axios.post(location.pathname + '/subscriptions');
+                // axios.post(location.pathname + '/subscriptions');
 
-                flash('Subscribed');
+                axios[
+                    (this.active) ? 'delete' : 'post'
+                ](location.pathname + '/subscriptions');
+
+                // flash('Subscribed');
+                this.active = ! this.active;
             }
         }
     }
