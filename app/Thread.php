@@ -108,6 +108,15 @@ class Thread extends Model
     // 向话题添加回复
     public function addReply($reply)
     {
-        return $this->replies()->create($reply);
+        $reply = $this->replies()->create($reply);
+
+        // 向订阅用户添加通知
+        $this->subscriptions
+            ->filter(function($sub) use ($reply) {
+                return $sub->user_id != $reply->user_id;
+            })
+            ->each->notify($reply);
+
+        return $reply;
     }
 }

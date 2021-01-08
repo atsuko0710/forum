@@ -25,11 +25,11 @@ class SubscribeToThreadsTest extends TestCase
         $this->assertCount(1, $thread->subscriptions);
 
         // 在话题下有回复，订阅者接收到通知
-        // $thread->addReply([
-        //     'user_id' => auth()->id(),
-        //     'body' => '订阅测试'
-        // ]);
-        // $this->assertCount(1, auth()->user()->notifications);
+        $thread->addReply([
+            'user_id' => create('App\User')->id,
+            'body' => '订阅测试'
+        ]);
+        $this->assertCount(1, auth()->user()->notifications);
     }
 
     /**
