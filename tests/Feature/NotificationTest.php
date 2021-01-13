@@ -6,10 +6,18 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Notifications\DatabaseNotification;
 
 class NotificationTest extends TestCase
 {
     use DatabaseMigrations,RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        // 平时禁用异常处理
+        $this->signIn();
+    }
 
     /**
      * 自己回复了话题不需要通知
@@ -18,7 +26,6 @@ class NotificationTest extends TestCase
      */
     public function a_notification_is_prepared_when_a_subscribed_thread_receives_a_new_reply_that_is_not_by_the_current_user()
     {
-        $this->signIn();
         $thread = create('App\Thread');
         $thread->subscribe();
 
@@ -45,13 +52,14 @@ class NotificationTest extends TestCase
      */
     public function a_user_can_fetch_their_unread_notifications()
     {
-        $this->signIn();
-        $thread = create('App\Thread')->subscribe();
+        // $thread = create('App\Thread')->subscribe();
         
-        $thread->addReply([
-            'user_id' => create('App\User')->id,
-            'body' => 'some things'
-        ]);
+        // $thread->addReply([
+        //     'user_id' => create('App\User')->id,
+        //     'body' => 'some things'
+        // ]);
+
+        create(DatabaseNotification::class);
 
         $user = auth()->user();
         $response = $this->getJson('/profile/'. $user->name . '/notifications')->json();
@@ -66,13 +74,14 @@ class NotificationTest extends TestCase
      */
     public function a_user_can_clear_a_notification()
     {
-        $this->signIn();
-        $thread = create('App\Thread')->subscribe();
+        // $thread = create('App\Thread')->subscribe();
         
-        $thread->addReply([
-            'user_id' => create('App\User')->id,
-            'body' => 'some things'
-        ]);
+        // $thread->addReply([
+        //     'user_id' => create('App\User')->id,
+        //     'body' => 'some things'
+        // ]);
+
+        create(DatabaseNotification::class);
 
         $user = auth()->user();
         $this->assertCount(1, $user->unreadNotifications);
