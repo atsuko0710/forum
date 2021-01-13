@@ -2,10 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Activity;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class CreateThreadsTest extends TestCase
 {
@@ -93,5 +92,53 @@ class CreateThreadsTest extends TestCase
         $thread = make('App\Thread', $overwrite);
         $response = $this->post('/threads', $thread->toArray());
         return $response;
+    }
+
+    /**
+     * 话题能被删除
+     *
+     * @test
+     */
+    public function authorized_users_can_delete_threads()
+    {
+        $this->signIn();
+        $thread = create('App\Thread', ['user_id' => auth()->id()]);
+        $reply = create('App\Reply', ['thread_id' => $thread->id]);
+        $response = $this->json('DELETE', $thread->path());
+        // $response = $this->delete($thread->path());
+
+        // 正常状态，无返回数据
+        $response->assertStatus(204);
+        $this->assertDatabaseMissing('threads', ['id' => $thread->id]);
+        $this->assertDatabaseMissing('replies', ['id' => $reply->id]);
+
+        // $this->assertDatabaseMissing('activities', [
+        //     'subject_id' => $thread->id,
+        //     'subject_type' => get_class($thread),
+        // ]);
+
+        // $this->assertDatabaseMissing('activities', [
+        //     'subject_id' => $reply->id,
+        //     'subject_type' => get_class($reply),
+        // ]);
+
+        $this->assertEquals(0, Activity::count());
+    }
+
+    /**
+     * 登陆用户才能删除话题
+     *
+     * @test
+     */
+    public function unauthorized_users_may_not_delete_threads()
+    {
+        $this->withExceptionHanding();
+        $thread = create('App\Thread');
+        $this->delete($thread->path())
+            ->assertRedirect('/login');
+        
+        $this->signIn();
+        $this->delete($thread->path())
+            ->assertStatus(403);
     }
 }

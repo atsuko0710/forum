@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Channel;
+use App\Filters\ThreadsFilters;
 use App\Thread;
+use App\User;
 use Illuminate\Http\Request;
 
 class ThreadsController extends Controller
@@ -16,12 +19,49 @@ class ThreadsController extends Controller
     /**
      * 展示话题列表
      *
+     * @param Channel $channel
+     * @param ThreadsFilters $filter
      * @return \Illuminate\View\View|\Illuminate\Contracts\View\Factory
      */
-    public function index()
+    public function index(Channel $channel, ThreadsFilters $filter)
     {
-        $threads = Thread::latest()->get();
+        $threads = $this->getThreads($channel, $filter);
+
+        // 如果希望返回的是json则直接返回
+        if(request()->wantsJson()){
+            return $threads;
+        }
+
         return view('threads.index', compact('threads'));
+    }
+
+    protected function getThreads(Channel $channel, ThreadsFilters $filter)
+    {
+        $threads = Thread::latest()->filter($filter);
+
+        if ($channel->exists) {
+            $threads->where('channel_id', $channel->id);
+        }
+
+        $threads = $threads->get();
+        return $threads;
+
+        // 传入渠道值筛选
+        // if ($channel->exists) {
+        //     $threads = $channel->threads()->latest();
+        // } else {
+        //     $threads = Thread::latest();
+        // }
+
+        // 传入发布者筛选
+        // if ($username = request('by')) {
+        //     $user = User::where('name', $username)->firstOrFail();
+        //     $threads->where('user_id', $user->id);
+        // }
+        // $threads = $threads->get();
+
+        // $threads = $threads->filter($filter)->get();
+        return $threads;
     }
 
     /**
@@ -54,7 +94,8 @@ class ThreadsController extends Controller
             'title' => request('title'),
             'body' => request('body'),
         ]);
-        return redirect($thread->path()); 
+        return redirect($thread->path())
+            ->with('flash', '成功发布话题！');
     }
 
     /**
@@ -66,7 +107,10 @@ class ThreadsController extends Controller
      */
     public function show($channel, Thread $thread)
     {
-        return view('threads/show', compact('thread'));
+        return view('threads.show', [
+            'thread' => $thread,
+            'replies' => $thread->replies()->paginate(10)
+        ]);
     }
 
     /**
@@ -98,8 +142,14 @@ class ThreadsController extends Controller
      * @param  \App\Thread  $thread
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Thread $thread)
+    public function destroy($channel, Thread $thread)
     {
-        //
+        $this->authorize('update',$thread);
+
+        $thread->delete();
+        if (request()->wantsJson()) {
+            return response([], 204);    
+        }
+        return redirect('/threads');
     }
 }

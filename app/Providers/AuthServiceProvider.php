@@ -13,7 +13,9 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        'App\Model' => 'App\Policies\ModelPolicy',
+        // 'App\Model' => 'App\Policies\ModelPolicy',
+        'App\Thread' => 'App\Policies\ThreadPolicy',
+        'App\Reply' => 'App\Policies\ReplyPolicy',
     ];
 
     /**
@@ -25,6 +27,11 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        // 判断超管有所有权限
+        Gate::before(function($user) {
+            if ($user->name == '超级管理员') {
+                return true;
+            }
+        });
     }
 }

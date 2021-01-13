@@ -51,7 +51,7 @@ class ReplyController extends Controller
             'body' => request('body'),
             'user_id' => auth()->id(),
         ]);
-        return back();
+        return back()->with('flash', '成功添加回复！');
     }
 
     /**
@@ -85,7 +85,8 @@ class ReplyController extends Controller
      */
     public function update(Request $request, Reply $reply)
     {
-        //
+        $this->authorize('update', $reply);
+        $reply->update(request(['body']));
     }
 
     /**
@@ -96,6 +97,13 @@ class ReplyController extends Controller
      */
     public function destroy(Reply $reply)
     {
-        //
+        $this->authorize('update', $reply);
+        $reply->delete();
+
+        if (request()->expectsJson()) {
+            return response(['status' => '回复删除']);
+        }
+
+        return back();
     }
 }
