@@ -2,8 +2,10 @@
 
 namespace Tests\Unit;
 
+use App\Notifications\ThreadWasUpdate;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Support\Facades\Notification;
 
 /**
  * 话题测试
@@ -128,5 +130,25 @@ class ThreadsTest extends TestCase
 
         $thread->subscribe();
         $this->assertTrue($thread->isSubscribedTo);
+    }
+
+    /**
+     * 添加回复时，话题会通知所有订阅用户
+     *
+     * @test
+     */
+    public function a_thread_notifies_all_registered_subscribers_when_a_reply_is_added()
+    {
+        // 模拟已经发送了通知
+        Notification::fake();
+
+        $this->signIn();
+        $this->thread->subscribe()  // 订阅
+            ->addReply([  // 添加不同用户的回复
+                'body' => 'Foobar',
+                'user_id' => 999
+            ]);
+
+        Notification::assertSentTo(auth()->user(), ThreadWasUpdate::class);
     }
 }
