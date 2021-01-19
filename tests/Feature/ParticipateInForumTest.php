@@ -61,7 +61,8 @@ class ParticipateInForumTest extends TestCase
         $this->withExceptionHanding()->signIn();
         $thread = create('App\Thread');
         $reply = make('App\Reply', ['body' => null]);
-        $this->post($thread->path().'/reply', $reply->toArray())->assertSessionHasErrors('body');
+        // $this->post($thread->path().'/reply', $reply->toArray())->assertSessionHasErrors('body');
+        $this->post($thread->path().'/reply', $reply->toArray())->assertStatus(422);
     }
 
     /**
@@ -146,8 +147,9 @@ class ParticipateInForumTest extends TestCase
             'body' => 'forbidden'
         ]);
 
-        $this->expectException(\Exception::class);
+        // $this->expectException(\Exception::class);
 
-        $this->post($thread->path().'/reply', $reply->toArray());
+        $this->post($thread->path().'/reply', $reply->toArray())
+            ->assertStatus(422);
     }
 }

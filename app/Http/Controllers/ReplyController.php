@@ -44,13 +44,21 @@ class ReplyController extends Controller
      */
     public function store($channelId, Thread $thread, Spam $spam)
     {
-        $this->validateReply();
-
-        $thread->addReply([
-            'body' => request('body'),
-            'user_id' => auth()->id(),
-        ]);
-        return back()->with('flash', '成功添加回复！');
+        try {
+            $this->validate(request(), [
+                'body' => 'required|spamfree'
+            ]);
+    
+            $thread->addReply([
+                'body' => request('body'),
+                'user_id' => auth()->id(),
+            ]);
+            return back()->with('flash', '成功添加回复！');
+        } catch (\Exception $th) {
+            return response(
+                '不能提交回复', 422
+            );
+        }
     }
 
     /**
@@ -85,9 +93,18 @@ class ReplyController extends Controller
     public function update(Request $request, Reply $reply)
     {
         $this->authorize('update', $reply);
-        $this->validateReply();
 
-        $reply->update(request(['body']));
+        try {
+            $this->validate(request(), [
+                'body' => 'required|spamfree'
+            ]);
+    
+            $reply->update(request(['body']));
+        } catch (\Exception $th) {
+            return response(
+                '不能提交回复', 422
+            );
+        }
     }
 
     /**
@@ -108,12 +125,12 @@ class ReplyController extends Controller
         return back();
     }
 
-    protected function validateReply()
-    {
-        $this->validate(request(), [
-            'body' => 'required'
-        ]);
+    // protected function validateReply()
+    // {
+    //     $this->validate(request(), [
+    //         'body' => 'required'
+    //     ]);
 
-        resolve(Spam::class)->detect(request('body'));
-    }
+    //     resolve(Spam::class)->detect(request('body'));
+    // }
 }
