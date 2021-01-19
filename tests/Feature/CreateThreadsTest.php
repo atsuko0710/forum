@@ -52,7 +52,7 @@ class CreateThreadsTest extends TestCase
      */
     public function a_thread_requires_a_title()
     {
-        $this->publishThread(['title' => null])->assertSessionHasErrors('title');
+        $this->publishThread(['title' => null])->assertStatus(422);
     }
 
     /**
@@ -62,7 +62,7 @@ class CreateThreadsTest extends TestCase
      */
     public function a_thread_requires_a_body()
     {
-        $this->publishThread(['body' => null])->assertSessionHasErrors('body');
+        $this->publishThread(['body' => null])->assertStatus(422);
     }
 
     /**
@@ -74,10 +74,11 @@ class CreateThreadsTest extends TestCase
     {
         factory('App\Channel', 2)->create();
         // 传入空渠道ID报错
-        $this->publishThread(['channel_id' => null])->assertSessionHasErrors('channel_id');
+        $this->publishThread(['channel_id' => null])->assertStatus(422);
+        // ->assertSessionHasErrors('channel_id');
 
         // 传入不存在的渠道ID报错
-        $this->publishThread(['channel_id' => 3])->assertSessionHasErrors('channel_id');
+        $this->publishThread(['channel_id' => 3])->assertStatus(422);
     }
 
     /**

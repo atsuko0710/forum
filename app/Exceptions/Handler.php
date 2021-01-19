@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Validation\ValidationException;
 
 class Handler extends ExceptionHandler
 {
@@ -49,6 +50,13 @@ class Handler extends ExceptionHandler
         //     throw $exception;
         // }
 
+        if ($exception instanceof ValidationException) {
+            return response('Validation failed', 422);
+        }
+
+        if($exception instanceof ThrottleException){
+            return response('You are posting too frequently.',429);
+        }
         return parent::render($request, $exception);
     }
 

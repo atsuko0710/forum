@@ -141,6 +141,7 @@ class ParticipateInForumTest extends TestCase
      */
     public function replies_contain_spam_may_not_be_created()
     {
+        $this->withExceptionHanding();
         $this->signIn();
         $thread = create('App\Thread');
         $reply = make('App\Reply', [
@@ -155,8 +156,6 @@ class ParticipateInForumTest extends TestCase
 
     /**
      * 用户不能同时发布两条回复
-     *
-     * @test
      */
     public function users_may_only_reply_a_maximum_of_once_per_minute()
     {

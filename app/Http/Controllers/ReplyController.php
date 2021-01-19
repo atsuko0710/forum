@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreatePostRequest;
 use App\Inspections\Spam;
 use App\Reply;
 use App\Thread;
@@ -43,30 +44,13 @@ class ReplyController extends Controller
      * @param Thread $thread
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store($channelId, Thread $thread)
+    public function store($channelId, Thread $thread, CreatePostRequest $request)
     {
-        var_dump(Gate::denies('create', new Reply()));
-        if (Gate::denies('create', new Reply())) {
-            return response(
-                '您回复的太过频繁', 422
-            );
-        }
-
-        try {
-            $this->validate(request(), [
-                'body' => 'required|spamfree'
-            ]);
-    
-            $thread->addReply([
-                'body' => request('body'),
-                'user_id' => auth()->id(),
-            ]);
-            return back()->with('flash', '成功添加回复！');
-        } catch (\Exception $th) {
-            return response(
-                '不能提交回复', 422
-            );
-        }
+        $thread->addReply([
+            'body' => request('body'),
+            'user_id' => auth()->id(),
+        ])->load('owner');
+        return back()->with('flash', '成功添加回复！');
     }
 
     /**
