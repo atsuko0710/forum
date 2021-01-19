@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Reply extends Model
@@ -35,6 +36,22 @@ class Reply extends Model
         return $this->belongsTo(Thread::class);
     }
 
+    /**
+     * 判断是否刚刚发布回复
+     *
+     * @return bool
+     */
+    public function wasJustPublished()
+    {
+        // 回复创建时间和当前时间做比较
+        return $this->created_at->gt(Carbon::now()->subMinute());
+    }
+
+    /**
+     * 返回路径
+     *
+     * @return string
+     */
     public function path()
     {
         return $this->thread->path();

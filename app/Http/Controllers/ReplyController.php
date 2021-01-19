@@ -6,6 +6,7 @@ use App\Inspections\Spam;
 use App\Reply;
 use App\Thread;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class ReplyController extends Controller
 {
@@ -42,8 +43,15 @@ class ReplyController extends Controller
      * @param Thread $thread
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store($channelId, Thread $thread, Spam $spam)
+    public function store($channelId, Thread $thread)
     {
+        var_dump(Gate::denies('create', new Reply()));
+        if (Gate::denies('create', new Reply())) {
+            return response(
+                '您回复的太过频繁', 422
+            );
+        }
+
         try {
             $this->validate(request(), [
                 'body' => 'required|spamfree'

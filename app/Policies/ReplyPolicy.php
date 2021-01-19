@@ -24,4 +24,14 @@ class ReplyPolicy
     {
         return $reply->user_id == $user->id;
     }
+
+    public function create(User $user)
+    {
+        return true;
+        // 当一个用户从来没有回复过
+        if (! $lastReply = $user->fresh()->lastReply) {
+            return true;
+        }
+        return ! $lastReply->wasJustPublished();
+    }
 }
