@@ -151,4 +151,28 @@ class ThreadsTest extends TestCase
 
         Notification::assertSentTo(auth()->user(), ThreadWasUpdate::class);
     }
+
+    /**
+     * 对于新话题加粗显示
+     *
+     * @test
+     */
+    public function a_thread_can_check_if_the_authenticated_user_has_read_all_replies()
+    {
+        $this->signIn();
+        $thread = create('App\Thread');
+
+        tap(auth()->user(), function ($user) use ($thread) {
+
+            // 话题是否被该用户阅读过
+            // 如果没有阅读则加粗显示
+            $this->assertTrue($thread->hasUpdatesFor($user));
+
+            // 阅读话题
+            $user->read($thread);
+
+            // 取消加粗
+            $this->assertFalse($thread->hasUpdatesFor($user));
+        });
+    }
 }

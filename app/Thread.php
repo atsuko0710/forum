@@ -125,4 +125,16 @@ class Thread extends Model
 
         return $reply;
     }
+
+    /**
+     * 判断话题是否能被更新
+     *
+     * @return boolean
+     */
+    public function hasUpdatesFor($user)
+    {
+        $key = $user->visitedThreadCacheKey($this);
+        // 返回话题更新时间是否大于用户阅读该话题的时间，如果是则说明此时该用户没有阅读过该话题
+        return $this->updated_at > cache($key);
+    }
 }
