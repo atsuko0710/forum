@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Exception;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
@@ -130,5 +131,23 @@ class ParticipateInForumTest extends TestCase
 
         $this->signIn();
         $this->patch('/replies/'.$reply->id)->assertStatus(403);
+    }
+
+    /**
+     * 回复包含敏感词不能创建
+     *
+     * @test
+     */
+    public function replies_contain_spam_may_not_be_created()
+    {
+        $this->signIn();
+        $thread = create('App\Thread');
+        $reply = make('App\Reply', [
+            'body' => 'forbidden'
+        ]);
+
+        $this->expectException(\Exception::class);
+
+        $this->post($thread->path().'/reply', $reply->toArray());
     }
 }
