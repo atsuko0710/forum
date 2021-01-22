@@ -54,4 +54,20 @@ class ReplyTest extends TestCase
         ]);
         $this->assertEquals(['Jane', 'Jane'], $reply->mentionedUser());
     }
+
+    /**
+     * 被@的用户增加个人界面链接
+     *
+     * @test
+     */
+    public function it_warps_mentioned_usernames_in_the_body_within_archor_tags()
+    {
+        $reply = create('App\Reply', [
+            'body' => 'talk to @Jane'
+        ]);
+        $this->assertEquals(
+            'talk to <a href="/profiles/Jane">@Jane</a>',
+            $reply->body
+        );
+    }
 }

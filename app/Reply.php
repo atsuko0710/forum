@@ -37,6 +37,17 @@ class Reply extends Model
     }
 
     /**
+     * 使用修改器修改属性值
+     *
+     * @param string $body
+     * @return void
+     */
+    public function setBodyAttribute($body)
+    {
+        $this->attributes['body'] = preg_replace('/@([\w\-]+)/', '<a href="/profiles/$1">$0</a>', $body);
+    }
+
+    /**
      * 判断是否刚刚发布回复
      *
      * @return bool
@@ -54,7 +65,7 @@ class Reply extends Model
      */
     public function mentionedUser()
     {
-        preg_match_all('/\@([^\s\.]+)/', $this->body, $matches);
+        preg_match_all('/@([\w\-]+)/',$this->body,$matches);
         return $matches[1];
     }
 
