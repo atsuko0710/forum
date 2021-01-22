@@ -24,7 +24,7 @@
                 <button class="btn btn-xs btn-link" @click="editing = false">Cancel</button>
             </div>
 
-            <div v-else v-text="body"> </div>
+            <div v-else v-html="body"> </div>
         </div>
 
         <div class="panel-footer level">
