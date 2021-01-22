@@ -43,7 +43,7 @@ class ThreadsController extends Controller
             $threads->where('channel_id', $channel->id);
         }
 
-        $threads = $threads->get();
+        $threads = $threads->paginate(10);
         return $threads;
 
         // 传入渠道值筛选
