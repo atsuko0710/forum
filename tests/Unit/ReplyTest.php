@@ -18,11 +18,11 @@ class ReplyTest extends TestCase
      * 
      * @test
      */
-    public function a_replay_has_an_owner()
+    public function a_reply_has_an_owner()
     {
-        // $replay = factory('App\Reply')->create(); 
-        $replay = create('App\Reply'); 
-        $this->assertInstanceOf('App\User', $replay->owner);
+        // $reply = factory('App\Reply')->create(); 
+        $reply = create('App\Reply'); 
+        $this->assertInstanceOf('App\User', $reply->owner);
     }
 
     /**
@@ -40,5 +40,18 @@ class ReplyTest extends TestCase
         // 修改回复创建时间为上个月
         $reply->created_at = Carbon::now()->subMonth();
         $this->assertFalse($reply->wasJustPublished());
+    }
+
+    /**
+     * 回复内容中匹配获取用户名
+     *
+     * @test
+     */
+    public function it_can_detect_all_mentioned_users_in_the_body()
+    {
+        $reply = create('App\Reply', [
+            'body' => '@Jane talk to @Jane'
+        ]);
+        $this->assertEquals(['Jane', 'Jane'], $reply->mentionedUser());
     }
 }

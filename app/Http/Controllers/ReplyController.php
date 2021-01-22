@@ -53,17 +53,6 @@ class ReplyController extends Controller
             'user_id' => auth()->id(),
         ]);
 
-        // 匹配 @ 符号后面的字符
-        preg_match_all('/\@([^\s\.]+)/', $reply->body, $matches);
-
-        $names = $matches[1];
-        foreach ($names as $name) {
-            $user = User::whereName($name)->first();
-            if ($user) {
-                $user->notify(new YouWereMentioned($reply));
-            }
-        }
-
         return back()->with('flash', '成功添加回复！');
     }
 

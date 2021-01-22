@@ -16,7 +16,11 @@ class EventServiceProvider extends ServiceProvider
         // 'App\Events\Event' => [
         //     'App\Listeners\EventListener',
         // ],
-        'App\Events\ThreadHasNewReply' => [
+        // 'App\Events\ThreadHasNewReply' => [
+        //     'App\Listeners\NotifyThreadSubscribers'
+        // ],
+        'App\Events\ThreadReceivedNewReply' => [
+            'App\Listeners\NotifyMentionedUsers',
             'App\Listeners\NotifyThreadSubscribers'
         ]
     ];

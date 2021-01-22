@@ -48,6 +48,17 @@ class Reply extends Model
     }
 
     /**
+     * 匹配回复内容中匹配出来的用户名
+     *
+     * @return array
+     */
+    public function mentionedUser()
+    {
+        preg_match_all('/\@([^\s\.]+)/', $this->body, $matches);
+        return $matches[1];
+    }
+
+    /**
      * 返回路径
      *
      * @return string

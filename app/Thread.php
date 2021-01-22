@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Events\ThreadHasNewReply;
+use App\Events\ThreadReceivedNewReply;
 use Illuminate\Database\Eloquent\Model;
 
 class Thread extends Model
@@ -110,8 +111,9 @@ class Thread extends Model
     public function addReply($reply)
     {
         $reply = $this->replies()->create($reply);
-        // 改为用事件来触发通知
-        event(new ThreadHasNewReply($this, $reply));
+        // event(new ThreadHasNewReply($this, $reply));
+        // 在回复中增加 @ 通知,触发通知,两个通知合并到同一个事件
+        event(new ThreadReceivedNewReply($reply));
 
         return $reply;
 
