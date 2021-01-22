@@ -29,14 +29,21 @@ class NotifyMentionedUsers
     public function handle(ThreadReceivedNewReply $event)
     {
         // 匹配 @ 符号后面的字符
-        preg_match_all('/\@([^\s\.]+)/', $event->reply->body, $matches);
+        // preg_match_all('/\@([^\s\.]+)/', $event->reply->body, $matches);
 
-        $names = $matches[1];
-        foreach ($names as $name) {
-            $user = User::whereName($name)->first();
-            if ($user) {
+        // $names = $matches[1];
+        // foreach ($names as $name) {
+        //     $user = User::whereName($name)->first();
+        //     if ($user) {
+        //         $user->notify(new YouWereMentioned($event->reply));
+        //     }
+        // }
+
+        // 将取用户名改为一起取出
+        User::whereIn('name', $event->reply->mentionedUser())
+            ->get()
+            ->each(function ($user) use ($event) {
                 $user->notify(new YouWereMentioned($event->reply));
-            }
-        }
+            });
     }
 }
