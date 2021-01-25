@@ -59,6 +59,17 @@ class User extends Authenticatable
     }
 
     /**
+     * 修改头像地址
+     *
+     * @param string $avatar
+     * @return void
+     */
+    public function getAvatarPathAttribute($avatar)
+    {
+        return $avatar ?: 'avatars/default.jpg';
+    }
+
+    /**
      * 用户浏览话题
      * 用户阅读话题时将阅读时间更新到缓存
      * 
