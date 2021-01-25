@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Channel;
 use App\Filters\ThreadsFilters;
 use App\Thread;
+use App\Trending;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
@@ -24,7 +25,7 @@ class ThreadsController extends Controller
      * @param ThreadsFilters $filter
      * @return \Illuminate\View\View|\Illuminate\Contracts\View\Factory
      */
-    public function index(Channel $channel, ThreadsFilters $filter)
+    public function index(Channel $channel, ThreadsFilters $filter, Trending $trending)
     {
         $threads = $this->getThreads($channel, $filter);
 
@@ -34,8 +35,11 @@ class ThreadsController extends Controller
         }
 
         // 倒序取出阅读前五的话题
-        $trending = array_map('json_decode', Redis::zrevrange('trending_threads', 0, 4));
-        return view('threads.index', compact('threads', 'trending'));
+        // $trending = array_map('json_decode', Redis::zrevrange('trending_threads', 0, 4));
+        return view('threads.index', [
+            'threads' => $threads,
+            'trending' => $trending->get()
+        ]);
     }
 
     protected function getThreads(Channel $channel, ThreadsFilters $filter)
@@ -108,17 +112,20 @@ class ThreadsController extends Controller
      * @param Thread $thread
      * @return \Illuminate\View\View|\Illuminate\Contracts\View\Factory
      */
-    public function show($channel, Thread $thread)
+    public function show($channel, Thread $thread, Trending $trending)
     {
         if (auth()->check()) {
             auth()->user()->read($thread);
         }
 
         // 阅读次数增加
-        Redis::zincrby('trending_threads', 1, json_encode([
-            'title' => $thread->title,
-            'path' => $thread->path()
-        ]));
+        // Redis::zincrby('trending_threads', 1, json_encode([
+        //     'title' => $thread->title,
+        //     'path' => $thread->path()
+        // ]));
+        $trending->push($thread);
+        // 统计该话题的阅读数
+        $thread->visits()->record();
 
         return view('threads.show', [
             'thread' => $thread,

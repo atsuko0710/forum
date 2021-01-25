@@ -139,4 +139,14 @@ class Thread extends Model
         // 返回话题更新时间是否大于用户阅读该话题的时间，如果是则说明此时该用户没有阅读过该话题
         return $this->updated_at > cache($key);
     }
+
+    /**
+     * 声明 visits 类，记录浏览量
+     *
+     * @return Visits
+     */
+    public function visits()
+    {
+        return new Visits($this);
+    }
 }
