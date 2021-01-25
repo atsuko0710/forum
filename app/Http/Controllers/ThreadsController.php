@@ -7,6 +7,7 @@ use App\Filters\ThreadsFilters;
 use App\Thread;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redis;
 
 class ThreadsController extends Controller
 {
@@ -32,7 +33,9 @@ class ThreadsController extends Controller
             return $threads;
         }
 
-        return view('threads.index', compact('threads'));
+        // 倒序取出阅读前五的话题
+        $trending = array_map('json_decode', Redis::zrevrange('trending_threads', 0, 4));
+        return view('threads.index', compact('threads', 'trending'));
     }
 
     protected function getThreads(Channel $channel, ThreadsFilters $filter)
@@ -110,6 +113,12 @@ class ThreadsController extends Controller
         if (auth()->check()) {
             auth()->user()->read($thread);
         }
+
+        // 阅读次数增加
+        Redis::zincrby('trending_threads', 1, json_encode([
+            'title' => $thread->title,
+            'path' => $thread->path()
+        ]));
 
         return view('threads.show', [
             'thread' => $thread,

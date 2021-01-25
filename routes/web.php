@@ -11,10 +11,10 @@
 |
 */
 
-Route::get('/', function () {
-    $data = session();
-    return json_encode($data);
-});
+// Route::get('/', function () {
+//     $data = session();
+//     return json_encode($data);
+// });
 
 Auth::routes();
 
