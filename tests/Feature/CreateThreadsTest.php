@@ -46,6 +46,18 @@ class CreateThreadsTest extends TestCase
     }
 
     /**
+     * 第一次登陆的用户需要做邮箱验证
+     *
+     * @test
+     */
+    public function authenticated_users_must_first_confirm_their_email_address_before_creating_threads()
+    {
+        $this->publishThread()
+            ->assertRedirect('/threads')
+            ->assertSessionHas('flash', "你需要做邮箱验证！");
+    }
+
+    /**
      * 创建话题必须包含标题
      *
      * @test
@@ -87,7 +99,7 @@ class CreateThreadsTest extends TestCase
      * @param string $overwrite
      * @return \Illuminate\Foundation\Testing\TestResponse
      */
-    public function publishThread($overwrite = '')
+    public function publishThread($overwrite = [])
     {
         $this->withExceptionHanding()->signIn();
         $thread = make('App\Thread', $overwrite);
