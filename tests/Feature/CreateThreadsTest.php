@@ -24,7 +24,7 @@ class CreateThreadsTest extends TestCase
 
         // $thread = factory('App\Thread')->make();  // create 是直接入库，make是创建一个实例不入库
         $thread = make('App\Thread');  // create 是直接入库，make是创建一个实例不入库
-        $response = $this->post('/threads', $thread->toArray());  // 创建一个主题
+        $response = $this->post(route('threads') , $thread->toArray());  // 创建一个主题
         // $this->get('/threads')->assertSee($thread->title)->assertSee($thread->body);
         $this->get($response->headers->get('Location'))->assertSee($thread->title)->assertSee($thread->body);
     }
@@ -38,11 +38,11 @@ class CreateThreadsTest extends TestCase
     {
         $this->withExceptionHanding();
         // 打开新建话题页面会跳转到登陆页
-        $this->get('threads/create')->assertRedirect('/login');
+        $this->get('threads/create')->assertRedirect(route('login'));
 
         // 创建话题会跳转到登陆页
         $thread = make('App\Thread');
-        $this->post('/threads', $thread->toArray())->assertRedirect('/login');
+        $this->post('/threads', $thread->toArray())->assertRedirect(route('login'));
     }
 
     /**
@@ -50,10 +50,20 @@ class CreateThreadsTest extends TestCase
      *
      * @test
      */
-    public function authenticated_users_must_first_confirm_their_email_address_before_creating_threads()
+    public function new_users_must_first_confirm_their_email_address_before_creating_threads()
     {
-        $this->publishThread()
-            ->assertRedirect('/threads')
+        // $this->publishThread()
+        //     ->assertRedirect('/threads')
+        //     ->assertSessionHas('flash', "你需要做邮箱验证！");
+
+        $user = factory('App\User')->states('unconfirmed')->create();
+
+        $this->signIn($user);
+
+        $thread = make('App\Thread');
+
+        $this->post(route('threads'), $thread->toArray())
+            ->assertRedirect(route('threads'))
             ->assertSessionHas('flash', "你需要做邮箱验证！");
     }
 
@@ -148,7 +158,7 @@ class CreateThreadsTest extends TestCase
         $this->withExceptionHanding();
         $thread = create('App\Thread');
         $this->delete($thread->path())
-            ->assertRedirect('/login');
+            ->assertRedirect(route('login'));
         
         $this->signIn();
         $this->delete($thread->path())

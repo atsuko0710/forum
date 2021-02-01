@@ -13,11 +13,16 @@ class RegisterConfirmationController extends Controller
 {
     public function index()
     {
-        User::where('confirmation_token', request('token'))
-            ->firstOrFail()
-            ->confirm();
+        try {
+            User::where('confirmation_token', request('token'))
+                ->firstOrFail()
+                ->confirm();    
+        } catch (\Throwable $th) {
+            return redirect(route('threads'))
+            ->with('flash', '未知的token');    
+        }
         
-        return redirect('/threads')
+        return redirect(route('threads'))
             ->with('flash', '你的账号已经确认');
     }
 }
