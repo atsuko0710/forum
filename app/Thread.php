@@ -28,6 +28,12 @@ class Thread extends Model
             $thread->replies->each->delete();
         });
     }
+
+    // 修改隐式绑定路由
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
     
     public function replies()
     {
@@ -104,7 +110,7 @@ class Thread extends Model
     public function path()
     {
         // return '/threads/' . $this->id;
-        return '/threads/'.$this->channel->slug.'/'.$this->id;
+        return '/threads/'.$this->channel->slug.'/'.$this->slug;
     }
 
     // 向话题添加回复
