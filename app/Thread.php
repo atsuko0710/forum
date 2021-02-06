@@ -66,6 +66,36 @@ class Thread extends Model
         return $filters->apply($query);
     }
 
+    public function setSlugAttribute($value){
+        if (static::whereSlug($slug = str_slug($value))->exists()) {
+            $slug = $this->incrementSlug($slug);
+        }
+        $this->attributes['slug'] = $slug;
+    }
+
+    /**
+     * 修改slug
+     *
+     * @param string $slug
+     * @return string
+     */
+    private function incrementSlug($slug)
+    {
+        // 取出最大ID话题的 slug 值
+        $max = static::whereTitle($this->title)->latest('id')->value('slug');
+
+        // 判断最后一个字符是否为数字
+        if (is_numeric($max[-1])) {
+            // 将数字匹配出来
+            return preg_replace_callback('/(\d+)$/', function ($matches) {
+                // 自增1
+                return $matches[1] + 1;
+            }, $max);
+        }
+        // 如果不是数字则后缀为2
+        return $slug . '-2';
+    }
+
     public function subscriptions()
     {
         return $this->hasMany(ThreadSubscription::class);

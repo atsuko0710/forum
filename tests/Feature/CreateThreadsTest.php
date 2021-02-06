@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Activity;
+use App\Thread;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
@@ -24,7 +25,8 @@ class CreateThreadsTest extends TestCase
 
         // $thread = factory('App\Thread')->make();  // create 是直接入库，make是创建一个实例不入库
         $thread = make('App\Thread');  // create 是直接入库，make是创建一个实例不入库
-        $response = $this->post(route('threads') , $thread->toArray());  // 创建一个主题
+        
+        $response = $this->post('/threads' , $thread->toArray());  // 创建一个主题
         // $this->get('/threads')->assertSee($thread->title)->assertSee($thread->body);
         $this->get($response->headers->get('Location'))->assertSee($thread->title)->assertSee($thread->body);
     }
@@ -163,5 +165,27 @@ class CreateThreadsTest extends TestCase
         $this->signIn();
         $this->delete($thread->path())
             ->assertStatus(403);
+    }
+
+    /**
+     * 话题拥有一个唯一的slug
+     *
+     * @test
+     */
+    public function a_thread_requires_a_unique_slug()
+    {
+        $this->signIn();
+
+        $thread = create('App\Thread', [
+            'title' => 'Foo Title',
+            'slug' => 'foo-title'
+        ]);
+        $this->assertEquals($thread->fresh()->slug, 'foo-title');
+        // dd($thread->toArray());
+        $this->post('/threads', $thread->toArray());
+        $this->assertTrue(Thread::whereSlug('foo-title-2')->exists());
+
+        $this->post('/threads', $thread->toArray());
+        $this->assertTrue(Thread::whereSlug('foo-title-3')->exists());
     }
 }
