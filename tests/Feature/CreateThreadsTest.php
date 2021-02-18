@@ -178,14 +178,32 @@ class CreateThreadsTest extends TestCase
 
         $thread = create('App\Thread', [
             'title' => 'Foo Title',
-            'slug' => 'foo-title'
+            // 'slug' => 'foo-title'
         ]);
         $this->assertEquals($thread->fresh()->slug, 'foo-title');
-        // dd($thread->toArray());
-        $this->post('/threads', $thread->toArray());
-        $this->assertTrue(Thread::whereSlug('foo-title-2')->exists());
 
-        $this->post('/threads', $thread->toArray());
-        $this->assertTrue(Thread::whereSlug('foo-title-3')->exists());
+        // $this->post('/threads', $thread->toArray());
+        // $this->assertTrue(Thread::whereSlug('foo-title-2')->exists());
+
+        // $this->post('/threads', $thread->toArray());
+        // $this->assertTrue(Thread::whereSlug('foo-title-3')->exists());
+
+        $thread = $this->postJson('/threads', $thread->toArray())->json();
+        $this->assertEquals('foo-title-' . $thread['id'], $thread['slug']);
+    }
+
+    /**
+     * 标题以数字结尾的需要换成适当的句子
+     *
+     * @test
+     */
+    public function a_thread_with_a_title_that_ends_in_a_number_should_generate_the_proper_slug()
+    {
+        $this->signIn();
+        $thread = create('App\Thread', ['title' => 'Something 24']);
+
+        $thread = $this->postJson('/threads', $thread->toArray())->json();
+        
+        $this->assertEquals('something-24-' . $thread['id'], $thread['slug']);
     }
 }

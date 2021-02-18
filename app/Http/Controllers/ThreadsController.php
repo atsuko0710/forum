@@ -100,8 +100,13 @@ class ThreadsController extends Controller
             'channel_id' => request('channel_id'),
             'title' => request('title'),
             'body' => request('body'),
-            'slug' => request('slug'),
+            // 'slug' => request('slug'),
         ]);
+
+        if (request()->wantsJson()) {
+            return response($thread, 200);
+        }
+
         return redirect($thread->path())
             ->with('flash', '成功发布话题！');
     }
