@@ -70,4 +70,22 @@ class ReplyTest extends TestCase
             $reply->body
         );
     }
+
+    /**
+     * 能够确定是最佳回复
+     *
+     * @test
+     */
+    public function it_knows_if_it_is_the_best_reply()
+    {
+        // 新建的回复不是最佳回复
+        $reply = create('App\Reply');
+        $this->assertFalse($reply->isBest());
+
+        // 设置最佳回复
+        $reply->thread->update([
+            'best_reply_id' => $reply->id
+        ]);
+        $this->assertTrue($reply->isBest());
+    }
 }

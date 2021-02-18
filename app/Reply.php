@@ -78,4 +78,14 @@ class Reply extends Model
     {
         return $this->thread->path();
     }
+
+    /**
+     * 判断最佳回复
+     *
+     * @return boolean
+     */
+    public function isBest()
+    {
+        return $this->thread->best_reply_id == $this->id;
+    }
 }
