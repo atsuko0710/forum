@@ -1990,6 +1990,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
 
 
 
@@ -2003,7 +2007,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         return {
             editing: false,
             id: this.reply.id,
-            body: this.reply.body
+            body: this.reply.body,
+            isBest: false
         };
     },
 
@@ -2027,6 +2032,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             axios.delete('/replies/' + this.reply.id);
 
             this.$emit('deleted', this.reply.id);
+        },
+        markBestReply: function markBestReply() {
+            this.isBest = true;
         }
     }
 });
@@ -54761,26 +54769,47 @@ var render = function() {
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "panel-footer level" }, [
-        _c(
-          "button",
-          {
-            staticClass: "btn btn-xs mr-1",
-            on: {
-              click: function($event) {
-                _vm.editing = true
-              }
-            }
-          },
-          [_vm._v("Edit")]
-        ),
+        _vm.canUpdate
+          ? _c("div", [
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-xs mr-1",
+                  on: {
+                    click: function($event) {
+                      _vm.editing = true
+                    }
+                  }
+                },
+                [_vm._v("Edit")]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-xs btn-danger mr-1",
+                  on: { click: _vm.destroy }
+                },
+                [_vm._v("Delete")]
+              )
+            ])
+          : _vm._e(),
         _vm._v(" "),
         _c(
           "button",
           {
-            staticClass: "btn btn-xs btn-danger mr-1",
-            on: { click: _vm.destroy }
+            directives: [
+              {
+                name: "show",
+                rawName: "v-show",
+                value: !_vm.isBest,
+                expression: "!isBest"
+              }
+            ],
+            staticClass: "btn btn-xs btn-default ml-a",
+            on: { click: _vm.markBestReply }
           },
-          [_vm._v("Delete")]
+          [_vm._v("Best Reply")]
         )
       ])
     ]

@@ -28,8 +28,12 @@
         </div>
 
         <div class="panel-footer level">
-            <button class="btn btn-xs mr-1" @click="editing = true">Edit</button>
-            <button class="btn btn-xs btn-danger mr-1" @click="destroy">Delete</button>
+            <div v-if="canUpdate">
+                <button class="btn btn-xs mr-1" @click="editing = true">Edit</button>
+                <button class="btn btn-xs btn-danger mr-1" @click="destroy">Delete</button>
+            </div>
+
+            <button class="btn btn-xs btn-default ml-a" @click="markBestReply" v-show="!isBest">Best Reply</button>
         </div>
     </div>
 </template>
@@ -46,7 +50,8 @@
             return {
               editing: false,
               id: this.reply.id,
-              body: this.reply.body
+              body: this.reply.body,
+              isBest: false
             };
         },
 
@@ -71,6 +76,10 @@
 
                 this.$emit('deleted', this.reply.id)
             },
+
+            markBestReply() {
+                this.isBest = true;
+            }
         }
     }
 </script>
