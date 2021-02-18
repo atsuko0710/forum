@@ -11,7 +11,7 @@ class Reply extends Model
 
     protected $guarded = [];
     protected $with = ['owner', 'favorites'];
-    protected $appends = ['favoritesCount', 'isFavorited'];
+    protected $appends = ['favoritesCount', 'isFavorited', 'isBest'];
 
     protected static function boot()
     {
@@ -37,7 +37,7 @@ class Reply extends Model
     }
 
     /**
-     * 使用修改器修改属性值
+     * 使用修改器修改属性值，实现回复中@链接
      *
      * @param string $body
      * @return void
@@ -45,6 +45,15 @@ class Reply extends Model
     public function setBodyAttribute($body)
     {
         $this->attributes['body'] = preg_replace('/@([\w\-]+)/', '<a href="/profile/$1">$0</a>', $body);
+    }
+
+    /**
+     * 是否被标记为最佳回复
+     *
+     * @return void
+     */
+    public function getIsBestAttribute(){
+        return $this->isBest();
     }
 
     /**
